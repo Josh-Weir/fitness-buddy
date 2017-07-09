@@ -12,19 +12,16 @@ export default class Markers extends Component {
 
   }
 
-  onDeletePress = (e) => {
-    this.props.deletePress(e)
-  }
-
   render() {
     return (
       <MapView.Marker
+        onPress={this.pressPin}
         coordinate={{
           latitude:this.props.latitude,
           longitude:this.props.longitude
         }}
       >
-
+        {this.props.children}
       </MapView.Marker>
     )
   }

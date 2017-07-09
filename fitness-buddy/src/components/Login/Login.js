@@ -15,11 +15,32 @@ const background = require("../img/login.jpg")
 export default class LoginForm extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      username: '',
+      password: ''
+    }
   }
 
   pressedCreateProfile = () => {
-    console.log('touched')
     this.props.createProfile()
+  }
+
+  handleUsernameChange = (e) => {
+    this.setState({
+      username: e.nativeEvent.text
+    })
+  }
+
+  handlePasswordChange = (e) => {
+    this.setState({
+      password: e.nativeEvent.text
+    })
+  }
+
+  onLoginIn = () => {
+    console.log(this.state.username, this.state.password)
+    this.props.pressLogin(this.state.username, this.state.password)
   }
   render() {
     return (
@@ -35,10 +56,10 @@ export default class LoginForm extends Component {
             <TextInput
               style={styles.input}
               placeholder="Email"
+              value={this.state.username}
+              onChange={this.handleUsernameChange}
               returnKeyType="next"
-              onSubmitEditing={(event) => {
-                this.refs.SecondInput.focus();
-              }}
+              onSubmitEditing={() => {this.refs.SecondInput.focus()}}
             />
           </View>
           <View style={styles.inputWrap}>
@@ -46,10 +67,14 @@ export default class LoginForm extends Component {
               ref='SecondInput'
               style={styles.input}
               placeholder="Password"
+              value={this.state.password}
+              onChange={this.handlePasswordChange}
+              secureTextEntry={true}
               returnKeyType="go"
+              onSubmitEditing={this.onLoginIn}
             />
           </View>
-          <TouchableOpacity activeOpacity={.5}>
+          <TouchableOpacity activeOpacity={.5}  onPress={this.onLoginIn}>
             <View style={styles.button}>
               <Text style={styles.ButtonText}>
                 Sign In

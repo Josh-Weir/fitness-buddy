@@ -20,18 +20,25 @@ export default class CreateProfile extends Component {
       username: "",
       password: "",
       confirmPassword: "",
-      passwordNotDifferent: false
+      passwordNotDifferent: false,
+      userNameNotSet: false
     }
   }
 
   pressSignUp = () => {
-    if((this.state.password === this.state.confirmPassword) && this.username) {
-      console.log("not Error")
-      this.props.signUp(this.state.username, this.state.password)
+    if(this.state.username) {
+      if(this.state.password === this.state.confirmPassword) {
+        this.props.signUp(this.state.username, this.state.password)
+      } else {
+        console.log(this.state.username, this.state.password, this.state.confirmPassword)
+        this.setState({
+          passwordNotDifferent: true
+        })
+      }
     } else {
-      console.log("error")
+      console.log('no user name')
       this.setState({
-        passwordNotDifferent: true
+        userNameNotSet: true
       })
     }
   }
@@ -62,11 +69,7 @@ export default class CreateProfile extends Component {
         source={background}
         resizeMode="cover"
       >
-        <View style={styles.container, styles.errorTextContainer}>
-          <Text style={styles.errorText}>
-            {this.state.passwordDifferent ? "Passwords are different" : ""}
-          </Text>
-        </View>
+        <View style={styles.container} />
         <View style={styles.wrapper}>
           <View style={styles.inputWrap}>
             <TextInput
@@ -87,6 +90,7 @@ export default class CreateProfile extends Component {
               placeholder="Password"
               value={this.state.password}
               onChange={this.handlePasswordChange}
+              secureTextEntry={true}
               returnKeyType="next"
               onSubmitEditing={(event) => {
                 this.refs.thirdInput.focus();
@@ -100,6 +104,7 @@ export default class CreateProfile extends Component {
               placeholder="Confirm Password"
               value={this.state.confirmPassword}
               onChange={this.handleConfirmPasswordChange}
+              secureTextEntry={true}
               returnKeyType="go"
               onSubmitEditing={this.pressSignUp}
             />

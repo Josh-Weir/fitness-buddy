@@ -4,6 +4,8 @@ import {
   Text,
   StyleSheet,
   Image,
+  TouchableOpacity,
+  TextInput
 } from 'react-native'
 import {
   MapView
@@ -12,23 +14,71 @@ import {
 export default class MapCallout extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      time: '',
+      excercise: ''
+    }
+
   }
 
-  render() {
+  onCreatePress = () => {
+    this.props.creaeExercie()
+  }
+
+  handleNameChane = (e) => {
+    this.setState({
+      excercise: e.nativeEvent.text
+    })
+  }
+
+  handleNameChane = (e) => {
+    this.setState({
+      time: e.nativeEvent.text
+    })
+  }
+
+  displayOwnerDetails = () => {
     return (
-      <MapView.Callout style={styles.callout}>
-        <Text style={styles.delete}>
-          X
+      <View style={styles.header}>
+        <Image
+          source={require('../img/gary.jpg')}
+          style={styles.profileImage}
+        />
+        <Text>
+          Josh Weir
         </Text>
-        <View style={styles.header}>
-          <Image
-            source={require('../img/gary.jpg')}
-            style={styles.profileImage}
-          />
-          <Text>
-            Josh Weir
-          </Text>
+      </View>
+    )
+
+  }
+
+  displayExerciseDetails = () => {
+    if(this.props.creatingNewMarker) {
+
+      return (
+        <View style={styles.details}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={this.state.name}
+              style={styles.input}
+              placeholder='Exercise'
+              onChange={this.handleNameChane}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={this.state.name}
+              style={styles.input}
+              placeholder='Time'
+              onChange={this.handleTimeChane}
+            />
+          </View>
         </View>
+      )
+
+    } else {
+      return (
         <View style={styles.details}>
           <Text>
             HIIT
@@ -36,7 +86,28 @@ export default class MapCallout extends Component {
           <Text>
             6:00pm
           </Text>
-          <TouchableOpacity activeOpacity={.5} onPress={this.onDeletePress}>
+        </View>
+      )
+    }
+  }
+
+  displayButton = () => {
+    if(this.props.creatingNewMarker) {
+      return(
+        <View>
+          <TouchableOpacity activeOpacity={.5} onPress={this.onCreatePress}>
+            <View style={styles.button}>
+              <Text style={styles.ButtonText}>
+                Done
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <TouchableOpacity activeOpacity={.5} onPress={this.onJoinPress}>
             <View style={styles.button}>
               <Text style={styles.ButtonText}>
                 Join
@@ -44,6 +115,16 @@ export default class MapCallout extends Component {
             </View>
           </TouchableOpacity>
         </View>
+      )
+    }
+  }
+
+  render() {
+    return (
+      <MapView.Callout style={styles.callout}>
+        {this.displayOwnerDetails()}
+        {this.displayExerciseDetails()}
+        {this.displayButton()}
       </MapView.Callout>
     )
   }
@@ -66,12 +147,19 @@ const styles = StyleSheet.create({
   profileImage: {
     height: 50,
     width: 50,
-    borderRadius: 25
+    borderRadius: 25,
+    marginRight: 10
   },
   details: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  inputContainer: {
+    flex: 1
+  },
+  detailsText: {
+    fontSize:16
   },
   button: {
     backgroundColor: "rgb(233, 86, 86)",
